@@ -1,31 +1,30 @@
 package com.example;
 
 import com.example.entity.Course;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.repository.CourseRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.example.repository.CourseRepository;
-
+@Slf4j
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final CourseRepository repository;
 
-    @Autowired
-    private CourseRepository repository;
+  public DemoApplication(CourseRepository repository) {
+    this.repository = repository;
+  }
 
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
 
-    @Override
-    public void run(String... arg0) {
-        Course course = repository.findById(10001L);
-        logger.info("Course 10001 -> {}", course);
-        repository.save(new Course("Microservices in 100 Steps"));
-    }
+  @Override
+  public void run(String... arg0) {
+    Course course = repository.findById(10001L);
+    log.info("Course 10001 -> {}", course);
+    repository.save(new Course("Microservices in 100 Steps"));
+  }
 }

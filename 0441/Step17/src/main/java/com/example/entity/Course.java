@@ -8,34 +8,34 @@ import jakarta.persistence.Id;
 @Entity
 public class Course {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+  @Id
+  @GeneratedValue
+  private Long id;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    protected Course() {
-    }
+  protected Course() {
+  }
 
-    public Course(String name) {
-        this.name = name;
-    }
+  public Course(String name) {
+    this.name = name;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    @Override
-    public String toString() {
-        return String.format("Course[%s]", name);
-    }
+  @Override
+  public String toString() {
+    return String.format("Course[%s]", name);
+  }
 }

@@ -2,9 +2,6 @@ package com.example.repository;
 
 import com.example.entity.Course;
 import jakarta.persistence.EntityManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CourseRepository {
 
-  @Autowired
-  EntityManager em;
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  final EntityManager em;
+
+  public CourseRepository(EntityManager em) {
+    this.em = em;
+  }
 
   public Course findById(Long id) {
     return em.find(Course.class, id);

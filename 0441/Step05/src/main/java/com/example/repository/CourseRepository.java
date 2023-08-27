@@ -2,22 +2,20 @@ package com.example.repository;
 
 import com.example.entity.Course;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
 public class CourseRepository {
 
-    @Autowired
-    EntityManager em;
+  final EntityManager em;
 
-    public Course findById(Long id) {
-        return em.find(Course.class, id);
-    }
+  public CourseRepository(EntityManager em) {
+    this.em = em;
+  }
 
-    //public Course save(Course course) -> insert or update
-
-    //public void deleteById(Long id)
+  public Course findById(Long id) {
+    return em.find(Course.class, id);
+  }
 
 }

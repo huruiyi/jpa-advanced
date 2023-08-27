@@ -1,72 +1,69 @@
 package com.example.repository;
 
+import com.example.entity.Passport;
 import com.example.entity.Student;
 import jakarta.persistence.EntityManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.entity.Passport;
-
+@Slf4j
 @Repository
 @Transactional
 public class StudentRepository {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+  final EntityManager em;
 
-    @Autowired
-    EntityManager em;
+  public StudentRepository(EntityManager em) {
+    this.em = em;
+  }
 
-    public Student findById(Long id) {
-        return em.find(Student.class, id);
+  public Student findById(Long id) {
+    return em.find(Student.class, id);
+  }
+
+  public Student save(Student student) {
+
+    if (student.getId() == null) {
+      em.persist(student);
+    } else {
+      em.merge(student);
     }
 
-    public Student save(Student student) {
+    return student;
+  }
 
-        if (student.getId() == null) {
-            em.persist(student);
-        } else {
-            em.merge(student);
-        }
+  public void deleteById(Long id) {
+    Student student = findById(id);
+    em.remove(student);
+  }
 
-        return student;
-    }
+  public void saveStudentWithPassport() {
+    Passport passport = new Passport("Z123456");
+    em.persist(passport);
 
-    public void deleteById(Long id) {
-        Student student = findById(id);
-        em.remove(student);
-    }
+    Student student = new Student("Mike");
 
-    public void saveStudentWithPassport() {
-        Passport passport = new Passport("Z123456");
-        em.persist(passport);
+    student.setPassport(passport);
+    em.persist(student);
+  }
 
-        Student student = new Student("Mike");
+  public void someOperationToUnderstandPersistenceContext() {
+    //Database Operation 1 - Retrieve student
+    Student student = em.find(Student.class, 20001L);
+    //Persistence Context (student)
 
-        student.setPassport(passport);
-        em.persist(student);
-    }
+    //Database Operation 2 - Retrieve passport
+    Passport passport = student.getPassport();
+    //Persistence Context (student, passport)
 
-    public void someOperationToUnderstandPersistenceContext() {
-        //Database Operation 1 - Retrieve student
-        Student student = em.find(Student.class, 20001L);
-        //Persistence Context (student)
+    //Database Operation 3 - update passport
+    passport.setNumber("E123457");
+    //Persistence Context (student, passport++)
 
-
-        //Database Operation 2 - Retrieve passport
-        Passport passport = student.getPassport();
-        //Persistence Context (student, passport)
-
-        //Database Operation 3 - update passport
-        passport.setNumber("E123457");
-        //Persistence Context (student, passport++)
-
-        //Database Operation 4 - update student
-        student.setName("Ranga - updated");
-        //Persistence Context (student++ , passport++)
-    }
+    //Database Operation 4 - update student
+    student.setName("Ranga - updated");
+    //Persistence Context (student++ , passport++)
+  }
 
 }

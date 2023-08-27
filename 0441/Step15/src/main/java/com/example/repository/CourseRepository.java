@@ -1,62 +1,57 @@
 package com.example.repository;
 
 
+import com.example.entity.Course;
 import jakarta.persistence.EntityManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.example.entity.Course;
 
 @Repository
 @Transactional
 public class CourseRepository {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+  final EntityManager em;
 
-    @Autowired
-    EntityManager em;
+  public CourseRepository(EntityManager em) {
+    this.em = em;
+  }
 
-    public Course findById(Long id) {
-        return em.find(Course.class, id);
+  public Course findById(Long id) {
+    return em.find(Course.class, id);
+  }
+
+  public Course save(Course course) {
+    if (course.getId() == null) {
+      em.persist(course);
+    } else {
+      em.merge(course);
     }
+    return course;
+  }
 
-    public Course save(Course course) {
+  public void deleteById(Long id) {
+    Course course = findById(id);
+    em.remove(course);
+  }
 
-        if (course.getId() == null) {
-            em.persist(course);
-        } else {
-            em.merge(course);
-        }
+  public void playWithEntityManager() {
 
-        return course;
-    }
+    Course course1 = new Course("Web Services in 100 Steps");
 
-    public void deleteById(Long id) {
-        Course course = findById(id);
-        em.remove(course);
-    }
+    em.persist(course1);
 
-    public void playWithEntityManager() {
+    Course course2 = new Course("Angular Js in 100 Steps");
 
-        Course course1 = new Course("Web Services in 100 Steps");
+    em.persist(course2);
 
-        em.persist(course1);
+    em.flush();
 
-        Course course2 = new Course("Angular Js in 100 Steps");
+    course1.setName("Web Services in 100 Steps - Updated");
 
-        em.persist(course2);
+    course2.setName("Angular Js in 100 Steps - Updated");
 
-        em.flush();
+    em.refresh(course1);
 
-        course1.setName("Web Services in 100 Steps - Updated");
-
-        course2.setName("Angular Js in 100 Steps - Updated");
-
-        em.refresh(course1);
-
-        em.flush();
-    }
+    em.flush();
+  }
 }
