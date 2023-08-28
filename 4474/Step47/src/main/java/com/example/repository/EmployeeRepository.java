@@ -1,12 +1,8 @@
 package com.example.repository;
 
 import com.example.entity.Employee;
-import java.util.List;
-
 import jakarta.persistence.EntityManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class EmployeeRepository {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+  final EntityManager em;
 
-    @Autowired
-    EntityManager em;
+  public EmployeeRepository(EntityManager em) {
+    this.em = em;
+  }
 
-    public void insert(Employee employee) {
-        em.persist(employee);
-    }
+  public void insert(Employee employee) {
+    em.persist(employee);
+  }
 
-    public List<Employee> retrieveAllEmployees() {
-        return em.createQuery("select e from Employee e", Employee.class).getResultList();
-    }
+  public List<Employee> retrieveAllEmployees() {
+    return em.createQuery("select e from Employee e", Employee.class).getResultList();
+  }
 }
